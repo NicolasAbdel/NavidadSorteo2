@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sorteo Navideño Mágico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              christmas: ['"Mountains of Christmas"', 'cursive'],
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              holiday: {
+                red: '#D42426',
+                green: '#2F5233',
+                gold: '#F1D570',
+                snow: '#F8F9FA'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #2F5233;
+        background-image: radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.2) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(255, 255, 255, 0.2) 2%, transparent 0%);
+        background-size: 100px 100px;
+      }
+      .snow-flake {
+        position: fixed;
+        top: -10px;
+        color: white;
+        animation: fall linear forwards;
+        z-index: 50;
+      }
+      @keyframes fall {
+        to {
+          transform: translateY(105vh);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Sorteo Navideño Mágico",
+  "description": "Una aplicación festiva para realizar sorteos y rifas navideñas. Sube tus participantes vía CSV, configura los premios y deja que Santa (y la suerte) decidan los ganadores.",
+  "requestFramePermissions": []
+}
