@@ -58,6 +58,7 @@ const App: React.FC = () => {
           <WinnerList 
             winners={winners} 
             prizes={prizes}
+            participantLists={participantLists}
             onBack={() => setShowHistory(false)}
           />
         )}

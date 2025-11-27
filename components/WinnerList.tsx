@@ -1,5 +1,5 @@
 import React from 'react';
-import { Winner, Prize } from '../types';
+import { Winner, Prize, ParticipantList } from '../types';
 import { Trophy, ArrowLeft, Download, FileText, FileSpreadsheet } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -7,17 +7,23 @@ import autoTable from 'jspdf-autotable';
 interface WinnerListProps {
   winners: Winner[];
   prizes: Prize[];
+  participantLists: ParticipantList[]; // <-- nuevo prop
   onBack: () => void;
 }
 
-const WinnerList: React.FC<WinnerListProps> = ({ winners, prizes, onBack }) => {
+const WinnerList: React.FC<WinnerListProps> = ({ winners, prizes, participantLists, onBack }) => {
   const getPrizeName = (id: string) => prizes.find(p => p.id === id)?.name || 'Premio Misterioso';
 
+  const getListName = (participantId: string) => {
+    const list = participantLists.find(l => l.participants.some(p => p.id === participantId));
+    return list?.name || '—';
+  };
+
   const downloadCSV = () => {
-    const headers = ['Nombre,Premio,Fecha'];
+    const headers = ['Nombre,Premio,Lista,Fecha'];
     const rows = winners.map(w => {
       const date = new Date(w.timestamp).toLocaleDateString() + ' ' + new Date(w.timestamp).toLocaleTimeString();
-      return `"${w.participant.name}","${getPrizeName(w.prizeId)}","${date}"`;
+      return `"${w.participant.name}","${getPrizeName(w.prizeId)}","${getListName(w.participant.id)}","${date}"`;
     });
     
     const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n");
@@ -42,15 +48,16 @@ const WinnerList: React.FC<WinnerListProps> = ({ winners, prizes, onBack }) => {
     doc.setTextColor(100);
     doc.text(`Fecha del reporte: ${new Date().toLocaleDateString()}`, 105, 30, { align: "center" });
 
-    // Tabla
+    // Tabla (ahora incluye columna Lista)
     const tableData = winners.map(w => [
       w.participant.name,
       getPrizeName(w.prizeId),
+      getListName(w.participant.id),
       new Date(w.timestamp).toLocaleTimeString()
     ]);
 
     autoTable(doc, {
-      head: [['Participante', 'Premio Ganado', 'Hora']],
+      head: [['Participante', 'Premio Ganado', 'Lista', 'Hora']],
       body: tableData,
       startY: 40,
       theme: 'grid',
@@ -101,6 +108,7 @@ const WinnerList: React.FC<WinnerListProps> = ({ winners, prizes, onBack }) => {
               <tr className="border-b-2 border-holiday-gold text-holiday-green">
                 <th className="p-4 font-bold text-lg">Ganador</th>
                 <th className="p-4 font-bold text-lg">Premio</th>
+                <th className="p-4 font-bold text-lg">Lista</th>
                 <th className="p-4 font-bold text-lg">Hora</th>
               </tr>
             </thead>
@@ -113,6 +121,9 @@ const WinnerList: React.FC<WinnerListProps> = ({ winners, prizes, onBack }) => {
                   </td>
                   <td className="p-4 text-holiday-red font-bold">
                     {getPrizeName(winner.prizeId)}
+                  </td>
+                  <td className="p-4 text-gray-700">
+                    {getListName(winner.participant.id)}
                   </td>
                   <td className="p-4 text-gray-500 text-sm">
                     {new Date(winner.timestamp).toLocaleTimeString()}
